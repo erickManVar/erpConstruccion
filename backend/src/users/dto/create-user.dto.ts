@@ -1,0 +1,15 @@
+// Ubicación: /Users/erickmanrique/ErpConstruccion/backend/src/users/dto/create-user.dto.ts
+
+import { IsString, IsEmail, MinLength } from 'class-validator';
+
+export class CreateUserDto {
+  @IsString()
+  readonly name: string;
+
+  @IsEmail()
+  readonly email: string;
+
+  @IsString()
+  @MinLength(8)
+  readonly password: string;
+}
