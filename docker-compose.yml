@@ -1,0 +1,35 @@
+# ERPConstruccion/docker-compose.yml
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./backend:/usr/src/app
+    depends_on:
+      - mongo
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+    depends_on:
+      - backend
+  erp_app:
+    build: ./erp_app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./erp_app:/app
+    depends_on:
+      - backend
+  mongo:
+    image: mongo:4.4
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+volumes:
+  mongo-data:
