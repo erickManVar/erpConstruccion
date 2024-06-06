@@ -1,3 +1,5 @@
+// projects.controller.ts
+
 import {
   Body,
   Controller,
@@ -9,26 +11,19 @@ import {
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { Project } from './schemas/project.schema';
+import { CreateProjectDto } from './dto/create-project.dto'; // Importar el DTO
 
 @Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
-  async createProject(
-    @Body()
-    body: {
-      name: string;
-      description?: string;
-      startDate?: Date;
-      endDate?: Date;
-    },
-  ): Promise<Project> {
+  async createProject(@Body() createProjectDto: CreateProjectDto): Promise<Project> {
     return this.projectsService.createProject(
-      body.name,
-      body.description,
-      body.startDate,
-      body.endDate,
+      createProjectDto.name,
+      createProjectDto.description,
+      createProjectDto.startDate,
+      createProjectDto.endDate,
     );
   }
 

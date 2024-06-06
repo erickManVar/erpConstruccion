@@ -8,18 +8,22 @@ import { TasksModule } from './tasks/tasks.module';
 import { WeeklyActivitiesModule } from './weekly-activities/weekly-activities.module';
 import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
+import { InventoryModule } from './inventory/inventory.module';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot('mongodb://localhost/erpConstruccion'), // Simplificado
+    MongooseModule.forRoot('mongodb://localhost/erpConstruccion'),
     UsersModule,
     TasksModule,
     WeeklyActivitiesModule,
     AuthModule,
     ProjectsModule,
+    InventoryModule,
+    LogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

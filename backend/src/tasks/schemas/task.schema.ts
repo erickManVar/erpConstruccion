@@ -3,7 +3,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Project } from 'src/projects/schemas/project.schema';
+import { Project } from '../../projects/schemas/project.schema';
 
 @Schema()
 export class Task {

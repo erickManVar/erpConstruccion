@@ -15,12 +15,11 @@ const Login = () => {
       console.log('Login response:', response);
       navigate('/dashboard');
     } catch (error) {
-      // Error handling improvements
       const message = error.response && error.response.data.message
         ? error.response.data.message
         : error.message;
       console.error('Login error:', message);
-      setErrorMessage(message);  // Set error message to display in UI
+      setErrorMessage(message);
     }
   };
 

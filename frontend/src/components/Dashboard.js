@@ -8,9 +8,8 @@ const Dashboard = () => {
     <div>
       <h2>Dashboard</h2>
       <button onClick={() => navigate('/weekly-activities')}>Panel de Actividades Semanales</button>
-      {/* Añadir más botones según sea necesario */}
-      <button>Botón 2</button>
-      <button>Botón 3</button>
+      <button onClick={() => navigate('/projects')}>Proyectos</button>
+      <button onClick={() => navigate('/inventory')}>Inventario</button>
       <button>Botón 4</button>
       <button>Botón 5</button>
       <button>Botón 6</button>
