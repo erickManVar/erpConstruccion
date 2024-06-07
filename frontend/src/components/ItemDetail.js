@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Input } from 'antd';
 import axios from 'axios';
 
 const ItemDetail = ({ show, handleClose, item }) => {
@@ -53,7 +53,6 @@ const ItemDetail = ({ show, handleClose, item }) => {
         {
           itemId: item._id,
           content: newLog,
-          createdBy: currentUser.name,  // Use the user's name
         },
         {
           headers: {
@@ -69,50 +68,38 @@ const ItemDetail = ({ show, handleClose, item }) => {
   };
 
   return (
-    <Modal show={show} onHide={handleClose} centered size="xl">
-      <Modal.Header closeButton>
-        <Modal.Title>Detalles del Item</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        <div className="item-details">
-          <h5>Nombre del Item: {item.itemName}</h5>
-          <p>Fecha de Ingreso: {new Date(item.entryDate).toLocaleDateString()}</p>
-          <p>Unidad de Medida: {item.measurementUnit}</p>
-          <p>Precio por Unidad: {item.unitPrice}</p>
-          <p>Cantidad: {item.quantity}</p>
-          <p>Precio Total: {item.totalPrice}</p>
-          <p>Nombre del Proyecto: {item.projectName}</p>
-          <p>Total del Proyecto: {item.totalProjectAmount}</p>
-        </div>
-        <div className="logs-section">
-          <h5>Bitácora</h5>
-          {logs.map((log) => (
-            <div key={log._id} className="log-entry">
-              <p>{log.content}</p>
-              <small>Creado por: {log.createdBy || 'Usuario desconocido'} el {new Date(log.createdAt).toLocaleString()}</small>
-            </div>
-          ))}
-        </div>
-        <Form onSubmit={handleAddLog}>
-          <Form.Group controlId="formLogContent">
-            <Form.Label>Nuevo Registro</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              value={newLog}
-              onChange={(e) => setNewLog(e.target.value)}
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Añadir Registro
-          </Button>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Cerrar
+    <Modal title="Detalles del Item" open={show} onCancel={handleClose} footer={null} centered>
+      <div className="item-details">
+        <h5>Nombre del Item: {item.itemName}</h5>
+        <p>Fecha de Ingreso: {new Date(item.entryDate).toLocaleDateString()}</p>
+        <p>Unidad de Medida: {item.measurementUnit}</p>
+        <p>Precio por Unidad: {item.unitPrice}</p>
+        <p>Cantidad: {item.quantity}</p>
+        <p>Precio Total: {item.totalPrice}</p>
+        <p>Nombre del Proyecto: {item.projectName}</p>
+        <p>Total del Proyecto: {item.totalProjectAmount}</p>
+      </div>
+      <div className="logs-section">
+        <h5>Bitácora</h5>
+        {logs.map((log) => (
+          <div key={log._id} className="log-entry">
+            <p>{log.content}</p>
+            <small>Creado por: {log.createdBy?.name || 'Usuario desconocido'} el {new Date(log.createdAt).toLocaleString()}</small>
+          </div>
+        ))}
+      </div>
+      <Form onFinish={handleAddLog}>
+        <Form.Item label="Nuevo Registro" name="newLog">
+          <Input.TextArea
+            rows={3}
+            value={newLog}
+            onChange={(e) => setNewLog(e.target.value)}
+          />
+        </Form.Item>
+        <Button type="primary" htmlType="submit">
+          Añadir Registro
         </Button>
-      </Modal.Footer>
+      </Form>
     </Modal>
   );
 };

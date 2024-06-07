@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
+import React from 'react';
+import { Button, Modal } from 'antd';
 import InventoryTable from './InventoryTable';
-import InventoryModal from './InventoryModal';
-import ItemDetail from './ItemDetail';
+import InventoryForm from './InventoryForm';
 import useInventory from '../hooks/useInventory';
+import ItemDetail from './ItemDetail';
 
 const Inventory = () => {
   const {
@@ -19,27 +19,18 @@ const Inventory = () => {
     handleSubmit,
     handleEdit,
     handleDelete,
-    setFormData,
     filteredInventory,
     loading,
+    detailItem,
+    handleDetailShow,
+    handleDetailClose,
+    showDetail
   } = useInventory();
-  const [detailItem, setDetailItem] = useState(null);
-  const [showDetail, setShowDetail] = useState(false);
-
-  const handleDetailShow = (item) => {
-    setDetailItem(item);
-    setShowDetail(true);
-  };
-
-  const handleDetailClose = () => {
-    setDetailItem(null);
-    setShowDetail(false);
-  };
 
   return (
     <div>
       <h1>Inventario</h1>
-      <Button onClick={handleShow}>Añadir Nuevo Item</Button>
+      <Button type="primary" onClick={handleShow}>Añadir Nuevo Item</Button>
       <Button onClick={() => setView('General')}>Inventario General</Button>
       <Button onClick={() => setView('Oficina Lima')}>Inventario Oficina Lima</Button>
       <Button onClick={() => setView('Casa Dimidex')}>Inventario Casa Dimidex</Button>
@@ -50,20 +41,24 @@ const Inventory = () => {
           inventory={filteredInventory}
           onEdit={handleEdit}
           onDelete={handleDelete}
-          onDetail={handleDetailShow} // Pass the detail handler
+          onDetail={handleDetailShow}
         />
       )}
-      <InventoryModal
-        show={show}
-        handleClose={handleClose}
-        formData={formData}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-        projects={projects}
-        users={users}
-        isEditing={isEditing}
-        setFormData={setFormData}
-      />
+      <Modal
+        title={isEditing ? 'Editar Item del Inventario' : 'Añadir Item al Inventario'}
+        open={show}
+        onCancel={handleClose}
+        footer={null}
+      >
+        <InventoryForm
+          formData={formData}
+          handleInputChange={handleInputChange}
+          handleSubmit={handleSubmit}
+          projects={projects}
+          users={users}
+          isEditing={isEditing}
+        />
+      </Modal>
       {detailItem && (
         <ItemDetail
           show={showDetail}

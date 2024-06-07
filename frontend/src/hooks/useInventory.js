@@ -77,16 +77,15 @@ const useInventory = () => {
     fetchCurrentUser();
   }, [fetchInventory, fetchProjects, fetchUsers, fetchCurrentUser]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (values) => {
     const data = {
-      ...formData,
-      totalPrice: (formData.unitPrice * formData.quantity).toFixed(3),
+      ...values,
+      totalPrice: (values.unitPrice * values.quantity).toFixed(3),
     };
 
     try {
       if (isEditing) {
-        await axios.put(`http://localhost:3000/inventory/${formData._id}`, data, {
+        await axios.put(`http://localhost:3000/inventory/${values._id}`, data, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
@@ -124,6 +123,14 @@ const useInventory = () => {
     }
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   const filteredInventory = inventory.filter((item) => view === 'General' || item.projectName === view);
 
   return {
@@ -135,7 +142,7 @@ const useInventory = () => {
     setView,
     handleShow,
     handleClose,
-    handleInputChange: (e) => setFormData({ ...formData, [e.target.name]: e.target.value }),
+    handleInputChange,
     handleSubmit,
     handleEdit,
     handleDelete,
