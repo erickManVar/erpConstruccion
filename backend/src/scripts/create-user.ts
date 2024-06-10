@@ -6,8 +6,8 @@ async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const usersService = app.get(UsersService);
 
-  const name = 'Erick D';
-  const email = '123@qwe.com';
+  const name = 'Alonso';
+  const email = 'qwe@qwe.com';
   const password = '123qwe';
   const role = 'admin';  // Define the role
 

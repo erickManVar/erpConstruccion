@@ -102,7 +102,7 @@ const ItemDetail = ({ show, handleClose, item }) => {
               ]}
             >
               <List.Item.Meta
-                title={log.createdBy?.name || 'Unknown User'}
+                title={JSON.parse(log.createdBy).name || 'Unknown User'} // Parse createdBy to get the name
                 description={log.content}
               />
             </List.Item>
