@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Popconfirm, Table } from 'antd';
-import { EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 
-const InventoryTable = ({ inventory, onEdit, onDelete, onDetail }) => {
+const InventoryTable = ({ inventory, onEdit, onDelete, onDetail, onLog }) => {
   const columns = [
     { title: 'Código del Item', dataIndex: 'itemCode', key: 'itemCode', sorter: (a, b) => a.itemCode.localeCompare(b.itemCode) },
     { title: 'Nombre del Item', dataIndex: 'itemName', key: 'itemName', sorter: (a, b) => a.itemName.localeCompare(b.itemName) },
@@ -20,8 +20,8 @@ const InventoryTable = ({ inventory, onEdit, onDelete, onDetail }) => {
       key: 'actions',
       render: (text, record) => (
         <>
-          <Button icon={<EyeOutlined />} onClick={() => onDetail(record)} />
           <Button icon={<EditOutlined />} onClick={() => onEdit(record)} style={{ marginLeft: 8 }} />
+          <Button icon={<FileTextOutlined />} onClick={() => onLog(record._id)} style={{ marginLeft: 8 }} /> {/* Use onLog for logs */}
           <Popconfirm title="¿Estás seguro de eliminar este item?" onConfirm={() => onDelete(record._id)}>
             <Button icon={<DeleteOutlined />} danger style={{ marginLeft: 8 }} />
           </Popconfirm>

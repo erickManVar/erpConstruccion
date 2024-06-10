@@ -9,6 +9,7 @@ const InventoryForm = ({ formData, handleInputChange, handleSubmit, projects, us
 
   return (
     <Form onFinish={handleSubmit} initialValues={formData}>
+      {isEditing && <Form.Item name="_id" style={{ display: 'none' }}><Input value={formData._id} /></Form.Item>}
       <Form.Item label="Código del Item" name="itemCode">
         <Input name="itemCode" value={formData.itemCode} onChange={handleInputChange} readOnly />
       </Form.Item>

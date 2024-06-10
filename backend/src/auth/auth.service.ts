@@ -1,3 +1,4 @@
+// C:\PROGRAMACIOM\erpConstruccion\erpConstruccion\backend\src\auth\auth.service.ts
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
@@ -14,7 +15,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
     console.log('User retrieved:', user); // Add this line for debugging
     if (user && await bcrypt.compare(password, user.password)) {
-      const { password, ...result } = user.toObject(); // Ensure mongoose document is converted to plain object
+      const { password, ...result } = user.toObject ? user.toObject() : user; // Ensure mongoose document is converted to plain object
       return result;
     }
     return null;

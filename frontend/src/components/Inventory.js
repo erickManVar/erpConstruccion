@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Modal } from 'antd';
 import InventoryTable from './InventoryTable';
 import InventoryForm from './InventoryForm';
@@ -27,6 +27,19 @@ const Inventory = () => {
     showDetail
   } = useInventory();
 
+  const [logModalVisible, setLogModalVisible] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+
+  const handleLogShow = (itemId) => {
+    setSelectedItemId(itemId);
+    setLogModalVisible(true);
+  };
+
+  const handleLogClose = () => {
+    setSelectedItemId(null);
+    setLogModalVisible(false);
+  };
+
   return (
     <div>
       <h1>Inventario</h1>
@@ -42,6 +55,7 @@ const Inventory = () => {
           onEdit={handleEdit}
           onDelete={handleDelete}
           onDetail={handleDetailShow}
+          onLog={handleLogShow} // Use handleLogShow specifically for logs
         />
       )}
       <Modal
@@ -66,6 +80,11 @@ const Inventory = () => {
           item={detailItem}
         />
       )}
+      <ItemDetail
+        show={logModalVisible}
+        handleClose={handleLogClose}
+        item={{ _id: selectedItemId }}
+      />
     </div>
   );
 };

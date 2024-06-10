@@ -12,7 +12,12 @@ const useInventory = () => {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setIsEditing(false);
+    setFormData({});
+  };
+
   const handleShow = () => setShow(true);
 
   const fetchInventory = useCallback(async () => {
@@ -78,6 +83,8 @@ const useInventory = () => {
   }, [fetchInventory, fetchProjects, fetchUsers, fetchCurrentUser]);
 
   const handleSubmit = async (values) => {
+    console.log("Form values on submit:", values); // Log the form values
+    
     const data = {
       ...values,
       totalPrice: (values.unitPrice * values.quantity).toFixed(3),
@@ -85,6 +92,10 @@ const useInventory = () => {
 
     try {
       if (isEditing) {
+        if (!values._id) {
+          console.error('Invalid item ID');
+          return;
+        }
         await axios.put(`http://localhost:3000/inventory/${values._id}`, data, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -105,12 +116,18 @@ const useInventory = () => {
   };
 
   const handleEdit = (item) => {
+    console.log("Editing item:", item); // Log the item being edited
     setIsEditing(true);
     setFormData(item);
     handleShow();
   };
 
   const handleDelete = async (id) => {
+    if (!id) {
+      console.error('Invalid item ID');
+      return;
+    }
+
     try {
       await axios.delete(`http://localhost:3000/inventory/${id}`, {
         headers: {

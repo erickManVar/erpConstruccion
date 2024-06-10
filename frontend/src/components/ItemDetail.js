@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Modal, Button, Form, Input } from 'antd';
+import { Modal, Button, Form, Input, List, Popconfirm } from 'antd';
 import axios from 'axios';
 
 const ItemDetail = ({ show, handleClose, item }) => {
   const [logs, setLogs] = useState([]);
   const [newLog, setNewLog] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
 
   const fetchLogs = useCallback(async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/logs/${item._id}`, {
+      const response = await axios.get(`http://localhost:3000/api/logs/${item._id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -20,36 +19,18 @@ const ItemDetail = ({ show, handleClose, item }) => {
     }
   }, [item]);
 
-  const fetchCurrentUser = useCallback(async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/auth/current', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
-      setCurrentUser(response.data);
-    } catch (error) {
-      console.error('Failed to fetch current user:', error);
-    }
-  }, []);
-
   useEffect(() => {
     if (item) {
       fetchLogs();
-      fetchCurrentUser();
     }
-  }, [item, fetchLogs, fetchCurrentUser]);
+  }, [item, fetchLogs]);
 
-  const handleAddLog = async (e) => {
-    e.preventDefault();
-    if (!currentUser) {
-      console.error('Current user is not defined');
-      return;
-    }
+  const handleAddLog = async () => {
+    if (!newLog.trim()) return;
 
     try {
       const response = await axios.post(
-        'http://localhost:3000/logs',
+        'http://localhost:3000/api/logs',
         {
           itemId: item._id,
           content: newLog,
@@ -67,6 +48,34 @@ const ItemDetail = ({ show, handleClose, item }) => {
     }
   };
 
+  const handleEditLog = async (logId, content) => {
+    try {
+      const response = await axios.put(`http://localhost:3000/api/logs/${logId}`, {
+        content,
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setLogs(logs.map(log => log._id === logId ? response.data : log));
+    } catch (error) {
+      console.error('Failed to edit log:', error);
+    }
+  };
+
+  const handleDeleteLog = async (logId) => {
+    try {
+      await axios.delete(`http://localhost:3000/api/logs/${logId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      setLogs(logs.filter(log => log._id !== logId));
+    } catch (error) {
+      console.error('Failed to delete log:', error);
+    }
+  };
+
   return (
     <Modal title="Detalles del Item" open={show} onCancel={handleClose} footer={null} centered>
       <div className="item-details">
@@ -81,24 +90,36 @@ const ItemDetail = ({ show, handleClose, item }) => {
       </div>
       <div className="logs-section">
         <h5>Bitácora</h5>
-        {logs.map((log) => (
-          <div key={log._id} className="log-entry">
-            <p>{log.content}</p>
-            <small>Creado por: {log.createdBy?.name || 'Usuario desconocido'} el {new Date(log.createdAt).toLocaleString()}</small>
-          </div>
-        ))}
+        <List
+          dataSource={logs}
+          renderItem={log => (
+            <List.Item
+              actions={[
+                <Button onClick={() => handleEditLog(log._id, prompt('Edit log:', log.content))}>Edit</Button>,
+                <Popconfirm title="Are you sure to delete this log?" onConfirm={() => handleDeleteLog(log._id)}>
+                  <Button type="danger">Delete</Button>
+                </Popconfirm>
+              ]}
+            >
+              <List.Item.Meta
+                title={log.createdBy?.name || 'Unknown User'}
+                description={log.content}
+              />
+            </List.Item>
+          )}
+        />
       </div>
-      <Form onFinish={handleAddLog}>
-        <Form.Item label="Nuevo Registro" name="newLog">
-          <Input.TextArea
-            rows={3}
+      <Form layout="inline" onFinish={handleAddLog}>
+        <Form.Item>
+          <Input
             value={newLog}
-            onChange={(e) => setNewLog(e.target.value)}
+            onChange={e => setNewLog(e.target.value)}
+            placeholder="Add a new log"
           />
         </Form.Item>
-        <Button type="primary" htmlType="submit">
-          Añadir Registro
-        </Button>
+        <Form.Item>
+          <Button type="primary" onClick={handleAddLog}>Add Log</Button>
+        </Form.Item>
       </Form>
     </Modal>
   );
