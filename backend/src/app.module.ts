@@ -1,3 +1,5 @@
+// C:\PROGRAMACIOM\erpConstruccion\erpConstruccion\backend\src\app.module.ts
+
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
@@ -16,7 +18,7 @@ import { LogsModule } from './logs/logs.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot('mongodb://localhost/erpConstruccion'),
+    MongooseModule.forRoot(process.env.MONGODB_URI),
     UsersModule,
     TasksModule,
     WeeklyActivitiesModule,
